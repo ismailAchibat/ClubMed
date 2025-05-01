@@ -3,11 +3,12 @@
 import React from "react";
 import { cities } from "@/lib/cities";
 import { useState, useEffect, useRef } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { createIncident, getDoctorNames } from "@/actions/incidents";
 import { toast } from "sonner";
+import { format } from "date-fns";
 import {
   Command,
   CommandEmpty,
@@ -23,6 +24,14 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const incidentSchema = z.object({
   doctor_name: z.string().min(1, "Le nom du médecin est requis"),
@@ -53,12 +62,13 @@ const incidentSchema = z.object({
   createdAt: z.date().default(() => new Date()),
 });
 
-
 const Page = () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [doctorNames, setDoctorNames] = useState<string[]>([]);
+  const [date, setDate] = useState<Date>();
+  const [time, setTime] = useState<string>();
 
   // Pour l'autocomplétion du médecin
   const [doctorInputValue, setDoctorInputValue] = useState("");
@@ -97,8 +107,8 @@ const Page = () => {
       fullName: formData.get("fullName") as string,
       IP: formData.get("IP") as string,
       gender: formData.get("gender") as "male" | "female" | undefined,
-      incidentDate: formData.get("incidentDate") as string,
-      incidentTime: formData.get("incidentTime") as string,
+      incidentDate: date ? format(date, "yyyy-MM-dd") : "",
+      incidentTime: time || "",
       place: value || (formData.get("place") as string),
       category: formData.get("category") as any,
       diagnosis: formData.get("diagnosis") as any,
@@ -115,6 +125,8 @@ const Page = () => {
         e.currentTarget.reset();
         setValue("");
         setDoctorInputValue("");
+        setDate(undefined);
+        setTime(undefined);
       } else {
         toast.error(response.error);
       }
@@ -148,7 +160,6 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-3xl">
-
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Doctor Information Section */}
           <div className="rounded-lg border bg-card p-6 shadow-sm">
@@ -254,26 +265,71 @@ const Page = () => {
                   <label htmlFor="incidentDate" className="text-sm font-medium">
                     Date de survenu des symptômes
                   </label>
-                  <input
-                    type="date"
-                    id="incidentDate"
-                    name="incidentDate"
-                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    required
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {date ? (
+                          format(date, "PPP")
+                        ) : (
+                          <span>Sélectionner une date</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <div className="space-y-2">
                   <label htmlFor="incidentTime" className="text-sm font-medium">
                     Heure de survenue des symptômes
                   </label>
-                  <input
-                    type="time"
-                    id="incidentTime"
-                    name="incidentTime"
-                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    required
-                  />
+                  <Select
+                    defaultValue={time}
+                    onValueChange={(e) => {
+                      setTime(e);
+                      if (date) {
+                        const [hours, minutes] = e.split(":");
+                        const newDate = new Date(date.getTime());
+                        newDate.setHours(parseInt(hours), parseInt(minutes));
+                        setDate(newDate);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="w-full font-normal focus:ring-0 focus:ring-offset-0">
+                      <SelectValue placeholder="Sélectionner l'heure" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <ScrollArea className="h-[15rem]">
+                        {Array.from({ length: 96 }).map((_, i) => {
+                          const hour = Math.floor(i / 4)
+                            .toString()
+                            .padStart(2, "0");
+                          const minute = ((i % 4) * 15)
+                            .toString()
+                            .padStart(2, "0");
+                          return (
+                            <SelectItem key={i} value={`${hour}:${minute}`}>
+                              {hour}:{minute}
+                            </SelectItem>
+                          );
+                        })}
+                      </ScrollArea>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
