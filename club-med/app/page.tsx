@@ -53,7 +53,6 @@ const incidentSchema = z.object({
   createdAt: z.date().default(() => new Date()),
 });
 
-type IncidentFormData = z.infer<typeof incidentSchema>;
 
 const Page = () => {
   const [open, setOpen] = useState(false);
@@ -233,7 +232,6 @@ const Page = () => {
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
-
               <div className="space-y-2">
                 <label htmlFor="gender" className="text-sm font-medium">
                   Sexe du patient
@@ -332,7 +330,7 @@ const Page = () => {
 
               <div className="space-y-2">
                 <label htmlFor="category" className="text-sm font-medium">
-                  Catégorie générale de l'événement vasculaire cérébral
+                  Catégorie générale de l&apos;événement vasculaire cérébral
                 </label>
                 <select
                   id="category"
