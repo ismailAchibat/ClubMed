@@ -1,0 +1,155 @@
+{
+  "id": "dfd32d0f-dbf2-4343-9b0b-4375833fef66",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.incidents": {
+      "name": "incidents",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "incidents_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "IP": {
+          "name": "IP",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fullName": {
+          "name": "fullName",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gender": {
+          "name": "gender",
+          "type": "gender",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "incidentDate": {
+          "name": "incidentDate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "incidentTime": {
+          "name": "incidentTime",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "place": {
+          "name": "place",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category": {
+          "name": "category",
+          "type": "category",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "diagnosis": {
+          "name": "diagnosis",
+          "type": "diagnosis",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "additionalInfo": {
+          "name": "additionalInfo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "doctor_name": {
+          "name": "doctor_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.category": {
+      "name": "category",
+      "schema": "public",
+      "values": [
+        "AIT",
+        "AVC ischémique",
+        "AVC hémorragique",
+        "TVC",
+        "Inconnue"
+      ]
+    },
+    "public.diagnosis": {
+      "name": "diagnosis",
+      "schema": "public",
+      "values": [
+        "AVC ischémique thrombotique",
+        "AVC ischémique embolique",
+        "AVC ischémique lacunaire",
+        "AVC hémorragique intra-parenchymateux",
+        "Hémorragie méningée (sous-arachnoïdienne)",
+        "AVC hémorragique intraventriculaire",
+        "Infarctus cérébelleux",
+        "Thrombose des sinus veineux cérébraux",
+        "Dissection artérielle (carotide ou vertébrale)",
+        "Non classé / Autre"
+      ]
+    },
+    "public.gender": {
+      "name": "gender",
+      "schema": "public",
+      "values": [
+        "male",
+        "female"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
